@@ -16,22 +16,25 @@ const app: Application = express();
 // Body parsing Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const driver = neo4j.driver(
-  "bolt://localhost:7687", // (1)
-  neo4j.auth.basic("neo4j", "12341234") // (2)
-);
-// console.log("hey");
 
-// console.log(NEO4J_URI!, NEO4J_USERNAME!, NEO4J_PASSWORD!)
-// let driver = initDriver(NEO4J_URI!, NEO4J_USERNAME!, NEO4J_PASSWORD!);
+initDriver(NEO4J_URI!, NEO4J_USERNAME!, NEO4J_PASSWORD!);
 // Register API Route Handlers
 app.use(bodyParser.json());
-const connectDB = async () => {
-    await (await driver).verifyConnectivity();
-};
-connectDB();
-// app.use(API_PREFIX, routes);
-const session1 = driver.session();
+
+app.use(API_PREFIX, routes);
+
+export default app;
+
+
+
+
+
+
+
+// const connectDB = async () => {
+//     await (await driver).verifyConnectivity();
+// };
+// connectDB();
 // const session2 = driver.session();
 // const session3 = driver.session();
 
@@ -167,5 +170,3 @@ const session1 = driver.session();
 // addHusWIfe(8, {name: "Moha", sex: "male", external: true });
 // addChild(8, 18, {name: "yasin", sex: "male", external: true})
 // deleteNode(14)
-
-export default app;

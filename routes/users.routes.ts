@@ -20,7 +20,7 @@ router.get("/", async (req, res, next) => {
     const driver = getDriver();
 
     const usersService = new UsersService(driver);
-    const users = await usersService.all(q, sort, order, limit, skip);
+    const users = await usersService.getAll(q, sort, order, limit, skip);
 
     res.json(users);
   } catch (e) {

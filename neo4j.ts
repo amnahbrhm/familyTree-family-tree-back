@@ -28,7 +28,7 @@ export async function initDriver(
   console.log(uri, username, password);
   
   driver = neo4j.driver(uri, neo4j.auth.basic(username, password));
-  return driver;
+  driver.verifyConnectivity()
 }
 // end::initDriver[]
 

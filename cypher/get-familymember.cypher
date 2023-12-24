@@ -1,0 +1,5 @@
+MATCH (p:FAMILYMEMPER)
+RETURN p
+ORDER BY $order
+SKIP $s
+LIMIT $l

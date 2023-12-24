@@ -14,7 +14,7 @@ const ORDER_DESC = "DESC";
 const ORDERS = [ORDER_ASC, ORDER_DESC];
 
 export const MOVIE_SORT = ["title", "released", "imdbRating"];
-export const PEOPLE_SORT = ["name", "born", "movieCount"];
+export const PEOPLE_SORT = ["name", "born", "sex"];
 export const RATING_SORT = ["rating", "timestamp"];
 
 /**
@@ -25,24 +25,25 @@ export const RATING_SORT = ["rating", "timestamp"];
  * @returns {Record<string, any>}
  */
 export function getPagination(req: any, validSort: any[]) {
-  let { q, limit, skip, sort, order } = req.query;
+  let { q, pageSize, pageNumber, sort, order } = req.query;
 
-  // Only accept valid orderby fields
-  if (sort !== undefined && !validSort.includes(sort)) {
-    sort = undefined;
-  }
+  // // Only accept valid orderby fields
+  // if (sort !== undefined && !validSort.includes(sort)) {
+  //   sort = undefined;
+  // }
 
-  // Only accept ASC/DESC values
-  if (order === undefined || !ORDERS.includes(order.toUpperCase())) {
-    order = ORDER_ASC;
-  }
+  // // Only accept ASC/DESC values
+  // if (order === undefined || !ORDERS.includes(order.toUpperCase())) {
+  //   order = ORDER_ASC;
+  // }
 
+  const skip = (parseInt(pageNumber || 0) - 1) * parseInt(pageSize || 6);
   return {
     q,
     sort,
     order,
-    limit: parseInt(limit || 6),
-    skip: parseInt(skip || 0),
+    limit: parseInt(pageSize || 6),
+    skip,
   };
 }
 
