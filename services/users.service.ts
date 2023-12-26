@@ -1,8 +1,13 @@
 // import NotFoundError from "../errors/not-found.error.js";
-import { Person, PersonProperties } from "../models/users.js";
+import {
+  CreatePersonProperties,
+  Person,
+  PersonProperties,
+} from "../models/users.js";
 import { toNativeTypes } from "../utils.js";
 import neo4j, { Driver, Record } from "neo4j-driver";
-import cypher from '../cypher/index.ts'
+import cypher from "../cypher/index.ts";
+import { v4 as uuidv4 } from "uuid";
 
 export default class PeopleService {
   driver: Driver;
@@ -20,7 +25,7 @@ export default class PeopleService {
       const res = await session.executeRead((tx) =>
         tx.run<Person>(
           cypher("get-familymember"),
-          { s: neo4j.int(skip), l: neo4j.int(limit), order: `p.${order}` },
+          { s: neo4j.int(skip), l: neo4j.int(limit), order: `p.${order}` }
           // { timeout: 3000 }
         )
       );
@@ -39,4 +44,58 @@ export default class PeopleService {
     return { items: users, count };
   }
   // end::all[]
+
+  async findById(id: string): Promise<PersonProperties> {
+    const session = this.driver.session();
+    let user: PersonProperties[];
+    try {
+      const res = await session.executeRead((tx) =>
+        tx.run<Person>(cypher("get-user-by-id"), { id })
+      );
+      user = res.records.map((record: Record) => {
+        return record.get("p").properties;
+      });
+    } finally {
+      await session.close();
+    }
+
+    return user[0];
+  }
+
+  async findByPhone(phone: string): Promise<PersonProperties> {
+    const session = this.driver.session();
+    let user: PersonProperties[];
+    try {
+      const res = await session.executeRead((tx) =>
+        tx.run<Person>(cypher("get-user-by-phone"), { phone })
+      );
+      // console.log(res.records[0].get('properties'));
+
+      user = res.records.map((record: Record) => {
+        return record.get("p").properties;
+      });
+    } finally {
+      await session.close();
+    }
+
+    return user[0];
+  }
+
+  async createUser(person: CreatePersonProperties): Promise<PersonProperties> {
+    console.log(person);
+    
+    const session = this.driver.session();
+    (person as PersonProperties) = { ...person, id: uuidv4() };
+
+    try {
+      const res = await session.executeWrite((tx) =>
+        tx.run<any>(cypher("create-user"), { ...person })
+      );
+      person = res.records[0].get("p");
+    } finally {
+      await session.close();
+    }
+
+    return person as PersonProperties;
+  }
 }

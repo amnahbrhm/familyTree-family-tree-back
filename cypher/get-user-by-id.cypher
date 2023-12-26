@@ -1,0 +1,2 @@
+MATCH (p:FAMILYMEMPER {id: $id})
+RETURN p

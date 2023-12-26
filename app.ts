@@ -11,11 +11,25 @@ import { initDriver } from "./neo4j.ts";
 import cors from "cors";
 import routes from "./routes/index.ts";
 import bodyParser from "body-parser";
-
+import * as passport from "./services/passport";
+declare global {
+	interface Error {
+		statusCode: number;
+	}
+	namespace Express {
+		interface User {
+      id: string,
+			role: string
+		}
+	}
+}
 const app: Application = express();
 // Body parsing Middleware
+app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+passport.init();
 
 initDriver(NEO4J_URI!, NEO4J_USERNAME!, NEO4J_PASSWORD!);
 // Register API Route Handlers
@@ -24,12 +38,6 @@ app.use(bodyParser.json());
 app.use(API_PREFIX, routes);
 
 export default app;
-
-
-
-
-
-
 
 // const connectDB = async () => {
 //     await (await driver).verifyConnectivity();

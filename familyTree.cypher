@@ -1,5 +1,5 @@
 CREATE 
-(ibrahim:FAMILYMEMPER{name:"Ibrahim", sex: 'male', external: false}),
+(ibrahim:FAMILYMEMPER{name:"Ibrahim",id:  sex: 'male', external: false}),
 (badriah:FAMILYMEMPER{name:"Badriah", sex: 'famale', external: true}),
 (lulu:FAMILYMEMPER{name:"Lulu", sex: 'famale', external: false}),
 (gygy:FAMILYMEMPER{name:"Joharah", sex: 'famale', external: false}),
@@ -14,6 +14,12 @@ CREATE
 (abdullah:FAMILYMEMPER{name:"Abdullah", sex: 'male', external: false}),
 (salma:FAMILYMEMPER{name:"Salma", sex: 'famale', external: true}),
 
+// نود الفرد (الاسم، تاريخ الميلاد، الحالة الاجتماعية، مسؤول؟ ،الجنس، رقم الجوال، اكسترنال () attribute تاريخ الموت، 
+// Relation : father, mother, child, الفخذ
+// Married -> start-> [] end-> [] reason 
+
+// نود الخبر (العنوان، المحتوى، الميديا ،منشور) 
+// Relations : writer, publisher(مسؤول) 
 
 
 (ibrahim)-[:husband]-> (badriah),

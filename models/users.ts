@@ -1,10 +1,16 @@
 import { Integer, Node, Relationship } from "neo4j-driver";
 
-enum maritalStatusEnum {
+enum MaritalStatusEnum {
   single,
   married,
   widowed,
   divorced,
+}
+
+enum RolesEnum {
+  person,
+  admin,
+  root
 }
 
 export interface PersonProperties {
@@ -13,8 +19,16 @@ export interface PersonProperties {
   id: string;
   external: boolean;
   sex: "male" | "famale";
-  maritalStatus: maritalStatusEnum;
+  maritalStatus: MaritalStatusEnum;
+  phoneNumber: string;
+  role: RolesEnum;
+  deathDate?: string,
+  updatedBy: string,
+  createdBy: string
 }
+
+export type CreatePersonProperties = Omit<PersonProperties, "id">
+
 
 export type Person = Node<Integer, PersonProperties>;
 
@@ -31,3 +45,9 @@ interface PersonMarriedToPerson {
   r: MarriedTo;
   w: Person;
 }
+
+
+export type JwtPayload = PersonProperties & {
+    exp: number;
+    iat: number;
+  }

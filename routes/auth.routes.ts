@@ -3,8 +3,10 @@ import { Router } from "express";
 import { getDriver } from "../neo4j.ts";
 import UsersService from "../services/users.service.ts";
 import { getPagination, getUserId, MOVIE_SORT, PEOPLE_SORT } from "../utils.ts";
-import requestIP from 'request-ip'
+import requestIP from "request-ip";
 import axios from "axios";
+import { JWT_SECRET } from ".././constants.ts";
+import jwt from "jsonwebtoken";
 
 const app: Router = Router();
 
@@ -16,7 +18,7 @@ const codeLifetimeInMinutes = 5;
 const apiVersion = "v16.0";
 const phoneNumberID = 148451221695380;
 let activeCodes: { [key: string]: any } = {};
-const accessToken = ''
+const accessToken = "";
 function generateCode() {
   // e.g. for code_length = 5, between 0 and 99999 (100000 - 1 = 10^5 - 1)
   const rawCode = Math.floor(Math.random() * 10 ** codeLength);
@@ -26,10 +28,21 @@ function generateCode() {
 
 app.get("/:phone_number", async (req, res) => {
   const phone = req.params.phone_number;
+  const driver = getDriver();
+  const usersService = new UsersService(driver);
+
+  const user = await usersService.findByPhone(phone);
+
+  // const user = await User.findOne({ user_name }).select("+password")
+  if (!user) {
+    // return res.status(401).send("الرقم غير مسجل اتصل بالمسؤول");
+    return res.send({code: 401, message: "الرقم غير مسجل اتصل بالمسؤول", success: false});
+  }
+
   const ipAddress = requestIP.getClientIp(req);
   console.log("ip adress", ipAddress);
 
-//   console.log(req.socket);
+  //   console.log(req.socket);
   console.log(`OTP requested for phone # ${phone}`);
 
   const code = generateCode();
@@ -83,7 +96,7 @@ app.get("/:phone_number", async (req, res) => {
     .post(sendMessageURL, payload, config)
     .then((_res) => {
       activeCodes[phone] = { code, expirationTimestamp };
-      res.send();
+      res.send({success: true, message: 'تم ارسال الكود', code: 200});
     })
     .catch((error) => {
       const errorCode = error.response?.status;
@@ -98,27 +111,39 @@ app.get("/:phone_number", async (req, res) => {
     });
 });
 
-app.post("/:phone_number", (req, res) => {
+app.post("/:phone_number", async (req, res) => {
   const phone = req.params.phone_number;
-  console.log(`OTP validation request for phone # ${phone}`);
+  const driver = getDriver();
+  const usersService = new UsersService(driver);
 
+  const user = await usersService.findByPhone(phone);
+  console.log(phone, 'heyyy');
+  
+  if (!user) {
+    return res.send({success: false, message: "الرقم غير مسجل اتصل بالمسؤول", code: 401});
+  }
+
+  console.log(`OTP validation request for phone # ${phone}`);
   const { code: expectedCode, expirationTimestamp } = activeCodes[phone];
   if (expectedCode == null) {
-    return res.status(404).send(`No active code for phone # ${phone}`);
+    return res.send({success: false, message: "لا يوجد رمز تحقق لهذا الرقم", code: 401});
   }
 
   const actualCode = req.body?.code;
   if (actualCode == null) {
-    return res.status(400).send("No code provided.");
+    return res.send({success: false, message: "يرجى ادخال كود التحقق", code: 401});
+
   } else if (expirationTimestamp < Date.now()) {
     delete activeCodes[phone];
-    return res.status(401).send("Code has expired, please request another.");
+    return res.send({success: false, message: "انتهت مهلة الكود، يرجى طلب كود جديد", code: 401});
+
   } else if (actualCode !== expectedCode) {
-    return res.status(401).send("Incorrect code.");
+    return res.send({success: false, message: "كود التحقق غير صحيح", code: 401});
   }
 
   delete activeCodes[phone];
-  res.send({ msg: "log in" });
+  const token = jwt.sign({ id: user.id }, JWT_SECRET);
+  res.status(200).send({success: true, message: "كود التحقق غير صحيح", code: 200, data: { user, token }});
 });
 
 export default app;
