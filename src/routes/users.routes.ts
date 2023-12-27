@@ -1,8 +1,8 @@
 import { Router } from "express";
 // import passport from "passport";
-import { getDriver } from "../neo4j.ts";
+import { getDriver } from "../../neo4j.ts";
 import UsersService from "../services/users.service.ts";
-import { getPagination, getUserId, MOVIE_SORT, PEOPLE_SORT } from "../utils.ts";
+import { getPagination, getUserId, MOVIE_SORT, PEOPLE_SORT } from "../../utils.ts";
 import passport from "passport";
 
 const router: Router = Router();

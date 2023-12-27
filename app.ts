@@ -9,9 +9,9 @@ import {
 } from "./constants.ts";
 import { initDriver } from "./neo4j.ts";
 import cors from "cors";
-import routes from "./routes/index.ts";
+import routes from "./src/routes/index.ts";
 import bodyParser from "body-parser";
-import * as passport from "./services/passport";
+import * as passport from "./src/services/passport.ts";
 declare global {
 	interface Error {
 		statusCode: number;

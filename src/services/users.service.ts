@@ -4,7 +4,7 @@ import {
   Person,
   PersonProperties,
 } from "../models/users.js";
-import { toNativeTypes } from "../utils.js";
+import { toNativeTypes } from "../../utils.js";
 import neo4j, { Driver, Record } from "neo4j-driver";
 import cypher from "../cypher/index.ts";
 import { v4 as uuidv4 } from "uuid";

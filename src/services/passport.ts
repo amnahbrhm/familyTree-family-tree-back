@@ -1,11 +1,11 @@
-import { JwtPayload } from './../models/users';
+import { JwtPayload } from '../models/users.ts';
 import passport from "passport";
 import util from "util";
 import { Strategy, ExtractJwt } from "passport-jwt";
 
-import { JWT_SECRET } from ".././constants.ts";
+import { JWT_SECRET } from "../../constants.ts";
 import UsersService from "./users.service.ts";
-import { getDriver } from '../neo4j.ts';
+import { getDriver } from '../../neo4j.ts';
 
 export function init() {
   const secret = JWT_SECRET;

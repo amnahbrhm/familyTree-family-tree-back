@@ -1,11 +1,11 @@
 import { Router } from "express";
 // import passport from "passport";
-import { getDriver } from "../neo4j.ts";
+import { getDriver } from "../../neo4j.ts";
 import UsersService from "../services/users.service.ts";
-import { getPagination, getUserId, MOVIE_SORT, PEOPLE_SORT } from "../utils.ts";
+import { getPagination, getUserId, MOVIE_SORT, PEOPLE_SORT } from "../../utils.ts";
 import requestIP from "request-ip";
 import axios from "axios";
-import { JWT_SECRET } from ".././constants.ts";
+import { JWT_SECRET } from "../../constants.ts";
 import jwt from "jsonwebtoken";
 
 const app: Router = Router();
@@ -18,7 +18,7 @@ const codeLifetimeInMinutes = 5;
 const apiVersion = "v16.0";
 const phoneNumberID = 148451221695380;
 let activeCodes: { [key: string]: any } = {};
-const accessToken = "";
+const accessToken = "EAAET6qINPOwBO2Ckf7ZBASokaSQtVp0L0wyZANvNvoTEa3lrRgU1Ggm3c63OA6YrUXrFZB1ZCnfjl9YQxcZA6xmcTfZBur3iWr1REPo2YUGZB0RkvHLyNKc50qQDdgfbOZBz9a0H6xCpgOXAdNAvvQN0R0sojPCevkc5fUuQjCD99HsOhFVFysxiVEz2XGvhwKbSA3DaV7M0ZBaQZCQCDRJrdxCHIRcA8ZD"
 function generateCode() {
   // e.g. for code_length = 5, between 0 and 99999 (100000 - 1 = 10^5 - 1)
   const rawCode = Math.floor(Math.random() * 10 ** codeLength);
@@ -118,6 +118,7 @@ app.post("/:phone_number", async (req, res) => {
 
   const user = await usersService.findByPhone(phone);
   console.log(phone, 'heyyy');
+  console.log('hey');
   
   if (!user) {
     return res.send({success: false, message: "الرقم غير مسجل اتصل بالمسؤول", code: 401});
