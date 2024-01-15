@@ -12,21 +12,23 @@ import cors from "cors";
 import routes from "./src/routes/index.ts";
 import bodyParser from "body-parser";
 import * as passport from "./src/services/passport.ts";
+import typeHandler from "./src/middleware/neo4j-type-handler.ts";
+
 declare global {
-	interface Error {
-		statusCode: number;
-	}
-	namespace Express {
-		interface User {
-      id: string,
-			role: string
-		}
-	}
+  interface Error {
+    statusCode: number;
+  }
+  namespace Express {
+    interface User {
+      id: string;
+      role: string;
+    }
+  }
 }
 const app: Application = express();
 // Body parsing Middleware
 app.use(cors());
-
+app.use(typeHandler);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 passport.init();
