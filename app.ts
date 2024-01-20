@@ -39,6 +39,7 @@ app.use(bodyParser.json());
 
 app.use(API_PREFIX, routes);
 app.get("/test", async (req, res) => {
+  console.log('worked');
   res.send("worked");
  });
 export default app;
