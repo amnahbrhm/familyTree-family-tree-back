@@ -38,7 +38,9 @@ initDriver(NEO4J_URI!, NEO4J_USERNAME!, NEO4J_PASSWORD!);
 app.use(bodyParser.json());
 
 app.use(API_PREFIX, routes);
-
+app.get("/test", async (req, res) => {
+  res.send("worked");
+ });
 export default app;
 
 // const connectDB = async () => {
