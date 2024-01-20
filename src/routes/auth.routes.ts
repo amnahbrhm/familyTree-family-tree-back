@@ -18,7 +18,7 @@ const codeLifetimeInMinutes = 5;
 const apiVersion = "v16.0";
 const phoneNumberID = 148451221695380;
 let activeCodes: { [key: string]: any } = {};
-const accessToken = "EAAET6qINPOwBO2Ckf7ZBASokaSQtVp0L0wyZANvNvoTEa3lrRgU1Ggm3c63OA6YrUXrFZB1ZCnfjl9YQxcZA6xmcTfZBur3iWr1REPo2YUGZB0RkvHLyNKc50qQDdgfbOZBz9a0H6xCpgOXAdNAvvQN0R0sojPCevkc5fUuQjCD99HsOhFVFysxiVEz2XGvhwKbSA3DaV7M0ZBaQZCQCDRJrdxCHIRcA8ZD"
+const accessToken = "EAAET6qINPOwBO4MbkzpCABEkZANKFdk5rJSydUUTMh2JwJx9aQLBBhSkwlZAcCBoCLl4qQa3ldmYiAd3OLhGS7ynfIfWQ1Gskt5WuOO4gtMKWfe1pTHSIaOIIrNZAbhZC5Ftcw2MrsQlPRySYWLeEjmf58PgQKEZCZAcfVTbhBLQ21ZB1fmXCgcoq7ex96ZBqM6NqaeZApQ1wnYjvKkoKd9v5aDECGu8ZD"
 function generateCode() {
   // e.g. for code_length = 5, between 0 and 99999 (100000 - 1 = 10^5 - 1)
   const rawCode = Math.floor(Math.random() * 10 ** codeLength);
@@ -27,7 +27,11 @@ function generateCode() {
 }
 
 app.get("/:phone_number", async (req, res) => {
+  
   const phone = req.params.phone_number;
+  console.log(`OTP requested for phone # ${phone}\n`);
+  const ipAddress = requestIP.getClientIp(req);
+  console.log(`ip adress # ${ipAddress} # for phone # ${phone} # \n`);
   const driver = getDriver();
   const usersService = new UsersService(driver);
 
@@ -36,16 +40,17 @@ app.get("/:phone_number", async (req, res) => {
   // const user = await User.findOne({ user_name }).select("+password")
   if (!user) {
     // return res.status(401).send("الرقم غير مسجل اتصل بالمسؤول");
+    console.log('no active account found for user with phone number: '+ req.params.phone_number);
     return res.send({code: 401, message: "الرقم غير مسجل اتصل بالمسؤول", success: false});
   }
 
-  const ipAddress = requestIP.getClientIp(req);
-  console.log("ip adress", ipAddress);
+
 
   //   console.log(req.socket);
-  console.log(`OTP requested for phone # ${phone}`);
 
   const code = generateCode();
+  console.log(`generated code # ${code} # for phone # ${phone} # \n`);
+
   const expirationTimestamp = new Date();
   expirationTimestamp.setMinutes(
     expirationTimestamp.getMinutes() + codeLifetimeInMinutes
