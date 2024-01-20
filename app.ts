@@ -6,13 +6,13 @@ import {
   NEO4J_PASSWORD,
   NEO4J_URI,
   NEO4J_USERNAME,
-} from "./constants.ts";
-import { initDriver } from "./neo4j.ts";
+} from "./constants";
+import { initDriver } from "./neo4j";
 import cors from "cors";
-import routes from "./src/routes/index.ts";
+import routes from "./src/routes/index";
 import bodyParser from "body-parser";
-import * as passport from "./src/services/passport.ts";
-import typeHandler from "./src/middleware/neo4j-type-handler.ts";
+import * as passport from "./src/services/passport";
+import typeHandler from "./src/middleware/neo4j-type-handler";
 
 declare global {
   interface Error {

@@ -1,5 +1,5 @@
-import app from './app.ts'
-import { APP_PORT } from './constants.ts'
+import app from './app'
+import { APP_PORT } from './constants'
 // import axios from 'axios'
 // axios.post('http://localhost:4300/chat/sendmessage/966556004181', {
 //   message: 'Hello World',

@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import users from './users.routes.ts'
-import auth from './auth.routes.ts'
+import users from './users.routes'
+import auth from './auth.routes'
 // import status from './status.routes.js'
 
 const router: Router = Router()

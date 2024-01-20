@@ -1,11 +1,11 @@
 import { Router } from "express";
 // import passport from "passport";
-import { getDriver } from "../../neo4j.ts";
-import UsersService from "../services/users.service.ts";
-import { getPagination, getUserId, MOVIE_SORT, PEOPLE_SORT } from "../../utils.ts";
+import { getDriver } from "../../neo4j";
+import UsersService from "../services/users.service";
+import { getPagination, getUserId, MOVIE_SORT, PEOPLE_SORT } from "../../utils";
 import requestIP from "request-ip";
 import axios from "axios";
-import { JWT_SECRET } from "../../constants.ts";
+import { JWT_SECRET } from "../../constants";
 import jwt from "jsonwebtoken";
 
 const app: Router = Router();
