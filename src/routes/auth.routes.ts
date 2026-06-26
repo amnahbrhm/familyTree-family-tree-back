@@ -5,7 +5,14 @@ import UsersService from "../services/users.service";
 import { getPagination, getUserId, MOVIE_SORT, PEOPLE_SORT } from "../../utils";
 import requestIP from "request-ip";
 import axios from "axios";
-import { JWT_SECRET } from "../../constants";
+import {
+  JWT_SECRET,
+  WHATSAPP_API_VERSION,
+  WHATSAPP_PHONE_NUMBER_ID,
+  WHATSAPP_ACCESS_TOKEN,
+  WHATSAPP_TEMPLATE_NAME,
+  WHATSAPP_TEMPLATE_LANG,
+} from "../../constants";
 import jwt from "jsonwebtoken";
 
 const app: Router = Router();
@@ -15,10 +22,7 @@ const codeLifetimeInMinutes = 5;
 
 // const filename = "whatsapp-info.json";
 
-const apiVersion = "v16.0";
-const phoneNumberID = 148451221695380;
 let activeCodes: { [key: string]: any } = {};
-const accessToken = "EAAET6qINPOwBO4MbkzpCABEkZANKFdk5rJSydUUTMh2JwJx9aQLBBhSkwlZAcCBoCLl4qQa3ldmYiAd3OLhGS7ynfIfWQ1Gskt5WuOO4gtMKWfe1pTHSIaOIIrNZAbhZC5Ftcw2MrsQlPRySYWLeEjmf58PgQKEZCZAcfVTbhBLQ21ZB1fmXCgcoq7ex96ZBqM6NqaeZApQ1wnYjvKkoKd9v5aDECGu8ZD"
 function generateCode() {
   // e.g. for code_length = 5, between 0 and 99999 (100000 - 1 = 10^5 - 1)
   const rawCode = Math.floor(Math.random() * 10 ** codeLength);
@@ -56,41 +60,36 @@ app.get("/:phone_number", async (req, res) => {
     expirationTimestamp.getMinutes() + codeLifetimeInMinutes
   );
 
-  const sendMessageURL = `https://graph.facebook.com/${apiVersion}/${phoneNumberID}/messages`;
+  const sendMessageURL = `https://graph.facebook.com/${WHATSAPP_API_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
   const config = {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
     },
   };
+  const today = new Date().toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
   const payload = {
     messaging_product: "whatsapp",
     recipient_type: "individual",
     to: phone,
     type: "template",
     template: {
-      name: "auth",
+      name: WHATSAPP_TEMPLATE_NAME,
       language: {
-        code: "ar",
+        code: WHATSAPP_TEMPLATE_LANG,
       },
       components: [
         {
+          // Body params for jaspers_market_order_confirmation_v1: {{1}} name,
+          // {{2}} the OTP code, {{3}} date.
           type: "body",
           parameters: [
-            {
-              type: "text",
-              text: code,
-            },
-          ],
-        },
-        {
-          type: "button",
-          sub_type: "url",
-          index: "0",
-          parameters: [
-            {
-              type: "text",
-              text: code,
-            },
+            { type: "text", text: user.name },
+            { type: "text", text: code },
+            { type: "text", text: today },
           ],
         },
       ],
