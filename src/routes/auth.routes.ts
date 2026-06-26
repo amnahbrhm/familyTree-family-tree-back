@@ -139,7 +139,7 @@ app.post("/:phone_number", async (req, res) => {
   if (actualCode == null) {
     return res.send({success: false, message: "يرجى ادخال كود التحقق", code: 401});
 
-  } else if (expirationTimestamp < Date.now()) {
+  } else if (expirationTimestamp.getTime() < Date.now()) {
     delete activeCodes[phone];
     return res.send({success: false, message: "انتهت مهلة الكود، يرجى طلب كود جديد", code: 401});
 
@@ -149,7 +149,7 @@ app.post("/:phone_number", async (req, res) => {
 
   delete activeCodes[phone];
   const token = jwt.sign({ id: user.id }, JWT_SECRET);
-  res.status(200).send({success: true, message: "كود التحقق غير صحيح", code: 200, data: { user, token }});
+  res.status(200).send({success: true, message: "تم التحقق بنجاح", code: 200, data: { user, token }});
 });
 
 export default app;

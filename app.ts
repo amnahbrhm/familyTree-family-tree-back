@@ -10,7 +10,6 @@ import {
 import { initDriver } from "./neo4j";
 import cors from "cors";
 import routes from "./src/routes/index";
-import bodyParser from "body-parser";
 import * as passport from "./src/services/passport";
 import typeHandler from "./src/middleware/neo4j-type-handler";
 
@@ -35,8 +34,6 @@ passport.init();
 
 initDriver(NEO4J_URI!, NEO4J_USERNAME!, NEO4J_PASSWORD!);
 // Register API Route Handlers
-app.use(bodyParser.json());
-
 app.use(API_PREFIX, routes);
 app.get("/test", async (req, res) => {
   console.log('worked');

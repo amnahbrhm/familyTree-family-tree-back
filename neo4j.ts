@@ -28,7 +28,14 @@ export async function initDriver(
   console.log(uri, username, password);
   
   driver = neo4j.driver(uri, neo4j.auth.basic(username, password));
-  driver.verifyConnectivity()
+  // Don't let a failed initial connection crash the process (neo4j-driver 6
+  // surfaces this as an unhandled rejection). Log and let routes retry lazily.
+  driver
+    .verifyConnectivity()
+    .then(() => console.log("Connected to Neo4j"))
+    .catch((err) =>
+      console.error(`Could not connect to Neo4j: ${err.message}`)
+    );
 }
 // end::initDriver[]
 
