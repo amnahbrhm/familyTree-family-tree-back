@@ -98,12 +98,16 @@ export default class MembersService {
       const childrenWithUnknownMother = (
         record.get("childrenWithUnknownMother") as any[]
       ).map(basics);
+      const childrenWithUnknownFather = (
+        record.get("childrenWithUnknownFather") as any[]
+      ).map(basics);
 
       return {
         ...person,
         parents: { father, mother },
         spouses,
         childrenWithUnknownMother,
+        childrenWithUnknownFather,
       };
     } finally {
       await session.close();

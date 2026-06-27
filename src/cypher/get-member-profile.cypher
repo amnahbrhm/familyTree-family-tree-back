@@ -23,4 +23,7 @@ RETURN
   mother,
   spouses,
   [ (p)-[:father]->(c:FAMILYMEMPER)
-    WHERE NOT (:FAMILYMEMPER)-[:mother]->(c) | c ] AS childrenWithUnknownMother
+    WHERE NOT (:FAMILYMEMPER)-[:mother]->(c) | c ] AS childrenWithUnknownMother,
+  // Symmetric: this person's children (as mother) whose father isn't linked.
+  [ (p)-[:mother]->(c:FAMILYMEMPER)
+    WHERE NOT (:FAMILYMEMPER)-[:father]->(c) | c ] AS childrenWithUnknownFather
