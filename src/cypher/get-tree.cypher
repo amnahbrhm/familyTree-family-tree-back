@@ -8,9 +8,12 @@ MATCH (n:FAMILYMEMPER)
 WITH collect({
   id: n.id,
   name: n.name,
+  firstname: coalesce(n.firstname, head(split(n.name, ' '))),
+  fullname: coalesce(n.fullname, n.name),
   sex: n.sex,
   photoUrl: n.photoUrl,
-  deceased: n.deathDate IS NOT NULL
+  deceased: n.deathDate IS NOT NULL,
+  external: coalesce(n.external, false)
 }) AS nodes
 OPTIONAL MATCH (parent:FAMILYMEMPER)-[:father|mother]->(child:FAMILYMEMPER)
 WITH nodes, collect({ from: parent.id, to: child.id, type: 'parent' }) AS parentEdges
